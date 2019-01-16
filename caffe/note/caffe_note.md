@@ -194,3 +194,163 @@ layer {
 }
 ```
 
+```json
+# softmax-loss layer: 输出loss值
+layer {
+    name: "loss"
+    type: "SoftmaxWithLoss"
+    bottom: "ip1"
+    bottom: "label"
+    top: "loss"
+}
+
+# softmax layer: 输出似然值
+layer {
+    bottom: "cls3_fc"
+    top: "prob"
+    name: "prob"
+    type: "Softmax"
+}
+```
+
+```json
+# reshape 层
+# 在不改变数据的情况下，改变输入的维度
+
+layer {
+    name: "reshape"
+    type: "Reshape"
+    bottom: "input"
+    top: "output"
+    reshape_param {
+    	shape {
+    		dim: 0 	# copy the dimension from below
+    		dim: 2
+    		dim: 3
+    		dim: -1	# infer it from the other dimensions
+		}
+	}
+}
+
+# 有一个可选的参数组shape，用于指定blob数据的各维的值（blob是一个四维的数据：n*c*w*h）。
+# dim:0  	表示维度不变，即输入和输出是相同的维度
+# dim:2  	或 dim:3 将原来的维度变成 2 或 3
+# dim:-1 	表示由系统自动计算维度。数据的总量不变，系统会根据blob数据的其他三维来自动计算当前维的维度值。
+# 假设原数据为：32*3*28*28，表示32张3通道的28*28的彩色图片
+	shape{
+    	dim:0
+        dim:0
+        dim:14
+        dim:-1
+	}
+# 输出数据为：32*3*14*56
+
+# Dropout 是一个防止过拟合的层
+# 只需要设置一个dropout_ratio就可以了。
+layer {
+    name: "drop7"
+    type: "Dropout"
+    bottom: "fc7-conv"
+    top: "fc7-conv"
+    dropout_param {
+    	dropout_ratio: 0.5
+	}
+}
+```
+
+```json
+# solver
+####参数含义#############
+# net: "examples/AAA/train_val.prototxt"    # 训练或者测试配置文件
+# test_iter: 40   							# 完成一次测试需要的迭代次数
+# test_interval: 475  						# 测试间隔
+# base_lr: 0.01  							# 基础学习率
+# lr_policy: "step"  						# 学习率变化规律
+# gamma: 0.1  								# 学习率变化指数
+# stepsize: 9500  							# 学习率变化频率
+# display: 20  								# 屏幕显示间隔
+# max_iter: 47500 							# 最大迭代次数
+# momentum: 0.9 							# 动量
+# weight_decay: 0.0005 						# 权重衰减
+# snapshot: 5000 							# 保存模型间隔
+# snapshot_prefix: "models/A1/caffenet_train" # 保存模型的前缀
+# solver_mode: GPU 							# 是否使用GPU
+
+# 往往loss function是非凸的，没有解析解，我们需要通过优化方法求解。
+# caffe提供了六种优化算法求最优参数，在solver配置文件中，通过设置type类型选择。
+# 	Stochastic Gradient Descent（type: "SGD"）
+# 	AdaDelta（type: "AdaDelta"）
+# 	Adaptive Gradient（type: "AdaGrad"）
+# 	Adam（type: "Adam"）
+#	Nesterov's Accelerated Gradient（type: "Nesterov"）
+# 	RMSprop（type: "RMSProp"）
+
+# lr_policy: "inv" # 学习率调整的策略
+# 	- fixed: 	保持base_lr不变
+# 	- step: 	如果设置为step，则还需要设置一个stepsize，返回 base_lr*gamma^(floor(iter/stepsize)), 其中iter表示当前的迭代次数
+# 	- exp: 		返回 base_lr*gamma^iter，iter为当前迭代次数
+# 	- inv: 		如果设置为inv，还需要设置一个power，返回base_lr*(1+gamma*iter)^(-power)
+# 	- multistep: 如果设置multistep，则还需要设置一个stepvalue。这个参数和step很相似，step是均匀等间隔变化，而multistep则是根据stepvalue值变化
+# 	- poly: 	学习率进行多项式误差，返回base_lr*(1-iter/max_iter)^(power)
+# 	- sigmoid: 	学习率进行sigmoid衰减，返回base_lr*(1/(1+exp(-gamma*(iter-stepsize))))
+
+net: "/home/tyd/caffe/examples/mnist/lenet_train_test.prototxt"
+test_iter: 100	# 迭代了多少个测试样本？ batch*test_iter 假设有5000个测试样本，一次测试想跑遍这5000个则需要设置test_iter*batch=5000
+test_interval: 500	# 测试间隔，也就是每训练500次，才进行一次测试。
+base_lr: 0.01
+lr_policy: "step"
+momentum: 0.9
+type: SGD
+weight_decay: 0.0005
+lr_policy: "inv"
+gamma: 0.0001
+power: 0.75
+display: 100
+max_iter: 20000
+snapshot: 5000
+snapshot_prefix: "models/A1/caffenet_train"
+solver_mode: CPU
+```
+
+> [Caffe--solver.prototxt配置文件 参数设置及含义](https://www.cnblogs.com/Allen-rg/p/5795867.html)]
+
+
+
+## 绘制网络
+
+1、安装 graphViz
+
+```shell
+# sudo apt-get install graphViz
+```
+
+2、安装 pydot
+
+```shell
+# sudo apt-get install pydot
+```
+
+3、绘制网络
+
+```shell
+# sudo python /path/caffe/python/draw_net.py /path/lenet_train.prototxt /path/lenet.png --rankdir=BT
+- 第一个参数：网络模型的prototxt文件
+- 第二个参数：保存的图片路径及名字
+- 第三个参数：--rankdir=x， x 有四种选项，分别是：
+	- LR：从左到右
+	- RL：从右到左
+	- TB：从上到下
+	- BT：从下到上
+	- 默认为 LR
+```
+
+
+
+
+
+
+
+
+
+
+
