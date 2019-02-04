@@ -1,0 +1,30 @@
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1  #lr_mult: 学习率的系数，最终的学习率是这个数乘以solver.prototxt配置文件中的base_lr。如果有两个lr_mult, 则第一个表示权值的学习率，第二个表示偏置项的学习率。一般偏置项的学习率是权值学习率的两倍。
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20 #卷积核（filter)的个数
+    kernel_size: 5 #卷积核的大小 
+    stride: 1 #卷积核的步长，默认为1 
+    pad: 0 #扩充边缘，默认为0，不扩充
+    weight_filler {
+      type: "xavier" #权值初始化。 默认为“constant",值全为0，很多时候我们用"xavier"算法来进行初始化，也可以设置为”gaussian"
+    }
+    bias_filler {
+      type: "constant" #偏置项的初始化。一般设置为"constant",值全为0
+    }
+  }
+}
+
+输入：n*c0*w0*h0
+输出：n*c1*w1*h1
+其中，c1就是参数中的num_output，生成的特征图个数
+ w1=(w0+2*pad-kernel_size)/stride+1;
+ h1=(h0+2*pad-kernel_size)/stride+1;

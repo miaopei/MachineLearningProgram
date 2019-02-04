@@ -1,0 +1,29 @@
+#在激活层中，对输入数据进行激活操作,是逐元素进行运算的,在运算过程中，没有改变数据的大小，即输入和输出的数据大小是相等的。
+
+###Sigmoid
+
+
+layer {
+  name: "test"
+  bottom: "conv"
+  top: "test"
+  type: "Sigmoid"
+}
+
+#ReLU是目前使用最多的激活函数，主要因为其收敛更快，并且能保持同样效果。标准的ReLU函数为max(x, 0)，当x>0时，输出x; 当x<=0时，输出0
+f(x)=max(x,0)
+
+
+
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "pool1"
+  top: "pool1"
+}
+
+
+
+
+
+

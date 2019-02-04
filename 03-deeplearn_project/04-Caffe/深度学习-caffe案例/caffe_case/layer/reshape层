@@ -1,0 +1,46 @@
+#在不改变数据的情况下，改变输入的维度
+
+layer {
+    name: "reshape"
+    type: "Reshape"
+    bottom: "input"
+    top: "output"
+    reshape_param {
+      shape {
+        dim: 0  # copy the dimension from below
+        dim: 2
+        dim: 3
+        dim: -1 # infer it from the other dimensions
+      }
+    }
+  }
+
+有一个可选的参数组shape, 用于指定blob数据的各维的值（blob是一个四维的数据：n*c*w*h）。
+
+dim:0  表示维度不变，即输入和输出是相同的维度。
+
+dim:2 或 dim:3 将原来的维度变成2或3
+
+dim:-1 表示由系统自动计算维度。数据的总量不变，系统会根据blob数据的其它三维来自动计算当前维的维度值 。
+
+假设原数据为：32*3*28*28， 表示32张3通道的28*28的彩色图片
+	shape {
+	dim: 0 
+	dim: 0
+	dim: 14
+	dim: -1 
+	}
+输出数据为：32*3*14*56
+
+#Dropout是一个防止过拟合的层
+#只需要设置一个dropout_ratio就可以了。
+layer {
+  name: "drop7"
+  type: "Dropout"
+  bottom: "fc7-conv"
+  top: "fc7-conv"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+
