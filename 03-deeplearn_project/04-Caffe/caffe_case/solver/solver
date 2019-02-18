@@ -31,7 +31,7 @@ test_net: "examples/hdf5_classification/logreg_auto_test.prototxt"
 
 test_iter: 100 #迭代了多少个测试样本呢？ batch*test_iter 假设有5000个测试样本，一次测试想跑遍这5000个则需要设置test_iter×batch=5000
 
-test_interval: 500 #测试间隔。也就是每训练500次，才进行一次测试。
+test_interval: 500 #测试间隔。也就是每训练500次，才进行一次测试，一般设置成1000。
 
 
 base_lr: 0.01 #base_lr用于设置基础学习率
