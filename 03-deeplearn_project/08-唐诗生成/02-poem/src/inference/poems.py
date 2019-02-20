@@ -19,8 +19,7 @@ def run_training():
     input_data = tf.placeholder(tf.int32, [FLAGS.batch_size,None])
     output_targets = tf.placeholder(tf.int32, [FLAGS.batch_size,None])
     
-    end_points = rnn_model(model='lstm',input=input_data,output_data = output_targets,vocab_size = len(vocabularies)
-                           ,run_size = 128,num_layers = 2,batch_size = 64,learning_rate = 0.01)
+    end_points = rnn_model(model='lstm',input=input_data,output_data = output_targets,vocab_size = len(vocabularies), run_size = 128,num_layers = 2,batch_size = 64,learning_rate = 0.01)
     
 
 def main(is_train):
