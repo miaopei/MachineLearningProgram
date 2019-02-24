@@ -1,0 +1,8 @@
+训练数据，8W多 12G蛮大的
+http://msvocds.blob.core.windows.net/coco2014/train2014.zip
+
+
+VGG训练好的模型
+http://www.vlfeat.org/matconvnet/models/beta16/imagenet-vgg-verydeep-19.mat
+
+把这两个下载好了之后放在data文件夹里面就好
