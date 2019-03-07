@@ -1,0 +1,20 @@
+#softmax-loss layer：输出loss值
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip1"
+  bottom: "label"
+  top: "loss"
+}
+
+#softmax layer: 输出似然值
+layers {
+  bottom: "cls3_fc"
+  top: "prob"
+  name: "prob"
+  type: “Softmax"
+}
+
+
+
+

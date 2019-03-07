@@ -1,0 +1,17 @@
+eclipse.preferences.version=1
+encoding//common/__init__.py=utf-8
+encoding//common/cnns.py=utf-8
+encoding//common/utils.py=utf-8
+encoding//dataset/level1.py=utf-8
+encoding//dataset/level2.py=utf-8
+encoding//dataset/level3.py=utf-8
+encoding//dataset/makeh5.py=utf-8
+encoding//dataset/utils.py=utf-8
+encoding//prototxt/generate.py=utf-8
+encoding//test/EN.py=utf-8
+encoding//test/run.py=utf-8
+encoding//test/test.py=utf-8
+encoding//train/level.py=utf-8
+encoding//webapp/app.py=utf-8
+encoding//webapp/config.py=utf-8
+encoding//webapp/landmark.py=utf-8

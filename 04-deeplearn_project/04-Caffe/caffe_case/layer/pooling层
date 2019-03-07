@@ -1,0 +1,13 @@
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX #池化方法，默认为MAX。目前可用的方法有MAX, AVE
+    kernel_size: 3 #池化的核大小
+    stride: 2 #池化的步长，默认为1。一般我们设置为2，即不重叠。
+  }
+}
+
+#pooling层的运算方法基本是和卷积层是一样的。

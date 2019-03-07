@@ -1,0 +1,77 @@
+layer {
+  name: "cifar"
+  type: "Data"
+  top: "data"  #一般用bottom表示输入,top表示输出，多个top代表有多个输出
+  top: "label"
+  include {
+    phase: TRAIN #训练网络分为训练阶段和自测试阶段,如果没写include则表示该层即在测试中，又在训练中
+  }
+  transform_param {
+    mean_file: "examples/cifar10/mean.binaryproto" #用一个配置文件来进行均值的操作
+    transform_param {
+    scale: 0.00390625
+    mirror: 1  # 1表示开启镜像，0表示关闭，也可用ture和false来表示
+    # 剪裁一个 227*227的图块，在训练阶段随机剪裁，在测试阶段从中间裁剪
+    crop_size: 227
+  }
+  }
+  data_param {
+    source: "examples/cifar10/cifar10_train_lmdb" #数据库来源
+    batch_size: 64 #每次批处理的个数
+    backend: LMDB #选用数据的名称
+  }
+}
+
+### 使用LMDB源
+layer {
+  name: "mnist"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    scale: 0.00390625
+  }
+  data_param {
+    source: "examples/mnist/mnist_train_lmdb"
+    batch_size: 64
+    backend: LMDB
+  }
+}
+
+###使用HDF5数据源
+layer {
+  name: "data"
+  type: "HDF5Data"
+  top: "data"
+  top: "label"
+  hdf5_data_param {
+    source: "examples/hdf5_classification/data/train.txt"
+    batch_size: 10
+  }
+}
+
+###数据直接来源与图片
+#/path/to/images/img3423.jpg 2  
+#/path/to/images/img3424.jpg 13  
+#/path/to/images/img3425.jpg 8
+
+layer {
+  name: "data"
+  type: "ImageData" #类型
+  top: "data"
+  top: "label"
+  transform_param {
+    mirror: false
+    crop_size: 227
+    mean_file: "data/ilsvrc12/imagenet_mean.binaryproto"
+  }
+  image_data_param {
+    source: "examples/_temp/file_list.txt"
+    batch_size: 50
+    new_height: 256 #如果设置就对图片进行resize操作
+    new_width: 256
+  }
+}
